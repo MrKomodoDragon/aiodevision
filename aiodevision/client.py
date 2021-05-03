@@ -13,6 +13,8 @@ class UndefinedLibraryError(Exception):
 class TokenRequired(Exception):
     pass
 
+class InvalidImage(Exception):
+    pass
 
 class Client:
     def __init__(self, token: typing.Optional[str]):
@@ -64,17 +66,19 @@ class Client:
             data = await resp.json()
         return RTFM(data['nodes'], float(data['query_time']))
 
-    async def ocr(self, image: bytes) -> str:
+    async def ocr(self, image: BytesIO) -> str:
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint')
-        filetype = imghdr.what(image, h=image)
-        params: typing.Dict[str, typing.Union[str, None]] = {
+        filetype = imghdr.what(image.read(), h=image.read())
+        if filetype is None:
+            raise InvalidImage('The Image you provided is invalid. Please provide a valid image')
+        params: typing.Dict[str, typing.Union[str]] = {
             'filetype': filetype
         }
         async with self.session.get(
             'https://idevision.net/api/public/ocr',
             params=params,
-            data=BytesIO(image),
+            data=image,
         ) as resp:
             data = await resp.json()
         return data['data']
