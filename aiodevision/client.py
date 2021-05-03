@@ -13,8 +13,10 @@ class UndefinedLibraryError(Exception):
 class TokenRequired(Exception):
     pass
 
+
 class InvalidImage(Exception):
     pass
+
 
 class Client:
     def __init__(self, token: typing.Optional[str]):
@@ -71,10 +73,10 @@ class Client:
             raise TokenRequired('A Token is required to access this endpoint')
         filetype = imghdr.what(image.read(), h=image.read())
         if filetype is None:
-            raise InvalidImage('The Image you provided is invalid. Please provide a valid image')
-        params: typing.Dict[str, typing.Union[str]] = {
-            'filetype': filetype
-        }
+            raise InvalidImage(
+                'The Image you provided is invalid. Please provide a valid image'
+            )
+        params: typing.Dict[str, typing.Union[str]] = {'filetype': filetype}
         async with self.session.get(
             'https://idevision.net/api/public/ocr',
             params=params,
@@ -93,8 +95,10 @@ class Client:
 
     async def xkcd_tags(self, word: str, num: int) -> str:
         payload = {'tag': word, 'num': num}
-        async with self.session.put('https://idevision.net/api/public/xkcd/tags', data=payload):
-            return "Succesfully added tags to xkcd comic"
+        async with self.session.put(
+            'https://idevision.net/api/public/xkcd/tags', data=payload
+        ):
+            return 'Succesfully added tags to xkcd comic'
 
     async def hompage(self, payload: typing.Dict[str, str]):
         """[summary]
@@ -105,8 +109,10 @@ class Client:
         """
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint.')
-        async with self.session.post('https://idevision.net/api/homepage', data=payload):
-            return "Successfully set up homepage"
+        async with self.session.post(
+            'https://idevision.net/api/homepage', data=payload
+        ):
+            return 'Successfully set up homepage'
 
     async def cdn_upload(self, image: BytesIO) -> CDN:
         if not self.token:
@@ -114,11 +120,14 @@ class Client:
         ext = imghdr.what(image.read(), h=image.read())
         if ext is None:
             raise InvalidImage(
-                'The Image you provided is invalid. Please provide a valid image')
+                'The Image you provided is invalid. Please provide a valid image'
+            )
         headers: typing.Dict[str, str] = {
             'File-Name': 'aiodevision.{0}'.format(ext)
         }
-        async with self.session.post('https://idevision.net/', data=image, headers=headers) as resp:
+        async with self.session.post(
+            'https://idevision.net/', data=image, headers=headers
+        ) as resp:
             data: typing.Dict[str, str] = await resp.json()
         return CDN(data)
 
@@ -126,3 +135,6 @@ class Client:
         async with self.session.get('https://idevision.net/api/cdn') as resp:
             data = await resp.json()
         return CDNStats(data)
+
+    async def get_upload_stats(self, node: str, slug: str):
+        pass
