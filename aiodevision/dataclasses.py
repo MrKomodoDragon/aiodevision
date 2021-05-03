@@ -27,3 +27,16 @@ class XKCD:
         self.news = data.get('news')
         self.image_url = data['image_url']
         self.url = data['url']
+        self.query_time = query_time
+
+class CDN:
+    def __init__(self, data: typing.Dict[str, str]):
+        self.url = data['url']
+        self.slug = data['slug']
+        self.node = data['node']
+
+class CDNStats:
+    def __init__(self, data: typing.Dict[str, str]):
+        self.upload_count = data['upload_count']
+        self.uploaded_today = data['uploaded_today']
+        self.last_uploaded = data['last_uploaded']

@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from io import BytesIO
 import imghdr
-from .dataclasses import RTFS, RTFM, XKCD
+from .dataclasses import CDN, CDNStats, RTFS, RTFM, XKCD
 import typing
 
 
@@ -107,3 +107,22 @@ class Client:
             raise TokenRequired('A Token is required to access this endpoint.')
         async with self.session.post('https://idevision.net/api/homepage', data=payload):
             return "Successfully set up homepage"
+
+    async def cdn_upload(self, image: BytesIO) -> CDN:
+        if not self.token:
+            raise TokenRequired('A Token is required to access this endpoint')
+        ext = imghdr.what(image.read(), h=image.read())
+        if ext is None:
+            raise InvalidImage(
+                'The Image you provided is invalid. Please provide a valid image')
+        headers: typing.Dict[str, str] = {
+            'File-Name': 'aiodevision.{0}'.format(ext)
+        }
+        async with self.session.post('https://idevision.net/', data=image, headers=headers) as resp:
+            data: typing.Dict[str, str] = await resp.json()
+        return CDN(data)
+
+    async def cdn_stats(self) -> CDNStats:
+        async with self.session.get('https://idevision.net/api/cdn') as resp:
+            data = await resp.json()
+        return CDNStats(data)
