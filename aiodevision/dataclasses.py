@@ -37,7 +37,7 @@ class XKCD:
         self.num = data['num']
         self.safe_title = data['safe_title']
         self.title = data['title']
-        self.posted = datetime.date.fromisoformat(data['posted'])
+        self.posted = datetime.datetime.fromisoformat(data['posted'])
         self.alt = data['alt']
         self.transcript = data.get('transcript')
         self.news = data.get('news')
@@ -58,7 +58,17 @@ class CDN:
 class CDNStats:
     __slots__ = ('upload_count', 'uploaded_today', 'last_uploaded')
 
-    def __init__(self, data: typing.Dict[str, str]):
+    def __init__(self, data: typing.Dict[str, typing.Union[str, float]]):
         self.upload_count = data['upload_count']
         self.uploaded_today = data['uploaded_today']
         self.last_uploaded = data['last_uploaded']
+
+
+class UploadStats:
+    def __init__(self, data: typing.Dict[str, typing.Union[str, float]]):
+        self.url = data['url']
+        self.timestamp = datetime.datetime.fromtimestamp(data['timestamp'])
+        self.author = data['author']
+        self.views = data['views']
+        self.node = data['node']
+        self.size = data['size']

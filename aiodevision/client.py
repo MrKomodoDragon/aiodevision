@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from io import BytesIO
 import imghdr
-from .dataclasses import CDN, CDNStats, RTFS, RTFM, XKCD
+from .dataclasses import CDN, CDNStats, RTFS, RTFM, UploadStats, XKCD
 import typing
 
 
@@ -25,22 +25,22 @@ class Client:
         self.session = aiohttp.ClientSession(headers=headers, loop=self.loop)
         self.token = token.strip() if token else None
 
-    async def rtfs(self, query: str, library: str) -> RTFS:
-        """[summary]
-
-        :param query: [description]
-        :type query: str
-        :param library: [description]
-        :type library: str
-        :raises UndefinedLibraryError: [description]
-        :return: [description]
-        :rtype: RTFS
-        """
-        if library not in ['twitchio', 'wavelink', 'aiohttp', 'discord.py']:
+    async def rtfs(
+        self, query: typing.Optional[str], library: str, format: typing.Optional[str] = 'links'
+    ) -> RTFS:
+        if library.lower() not in [
+            'twitchio',
+            'wavelink',
+            'aiohttp',
+            'discord.py',
+            'discord.py-2'
+        ]:
             raise UndefinedLibraryError(
                 'The Library specficied cannot by queried. Please provide a library from the following list: twitchio, wavelink, discord.py, or aiohttp.'
             )
-        params = {'query': query, 'library': library}
+        params = {'library': library, 'format': format}
+        if query:
+            params['query'] = query
         async with self.session.get(
             'https://idevision.net/api/public/rtfs', params=params
         ) as resp:
@@ -49,18 +49,9 @@ class Client:
 
     async def rtfm(
         self,
-        query: str,
+        query: typing.Optional[str],
         doc_url: str,
     ) -> RTFM:
-        """[summary]
-
-        :param query: [description]
-        :type query: str
-        :param doc_url: [description]
-        :type doc_url: str
-        :return: [description]
-        :rtype: RTFM
-        """
         params = {'query': query, 'location': doc_url}
         async with self.session.get(
             'https://idevision.net/api/public/rtfm', params=params
@@ -101,12 +92,6 @@ class Client:
             return 'Succesfully added tags to xkcd comic'
 
     async def hompage(self, payload: typing.Dict[str, str]):
-        """[summary]
-
-        :param payload: [description]
-        :type payload: Dict[str, str]
-        :raises TokenRequired: [description]
-        """
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint.')
         async with self.session.post(
@@ -136,5 +121,21 @@ class Client:
             data = await resp.json()
         return CDNStats(data)
 
+
+
     async def get_upload_stats(self, node: str, slug: str):
-        pass
+        if not self.token:
+            raise TokenRequired('A Token is required to access this endpoint')
+        async with self.session.get(
+            'https://idevision.net/api{0}/{1}'.format(node, slug)
+        ) as resp:
+            data = await resp.json()
+            return UploadStats(data)
+        
+    async def delete_cdn(self, node: str, slug: str) -> str:
+        if not self.token:
+            raise TokenRequired('A Token is required to access this endpoint')
+        url = 'https://idevision.net/api/{0}/{1}'.format(node, slug)
+        async with self.session.delete(url):
+            return 'Succesfully deleted upload'
+
