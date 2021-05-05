@@ -17,6 +17,9 @@ class TokenRequired(Exception):
 class InvalidImage(Exception):
     pass
 
+class InternalServerError(Exception):
+    pass
+
 
 class Client:
     def __init__(self, token: typing.Optional[str] = None):
@@ -34,6 +37,8 @@ class Client:
             'aiohttp',
             'discord.py',
             'discord.py-2'
+            'dpy'
+            'dpy2'
         ]:
             raise UndefinedLibraryError(
                 'The Library specficied cannot by queried. Please provide a library from the following list: twitchio, wavelink, discord.py, or aiohttp.'
@@ -44,6 +49,10 @@ class Client:
         async with self.session.get(
             'https://idevision.net/api/public/rtfs', params=params
         ) as resp:
+            if resp.status == 500:
+                raise InternalServerError("An Internal Server Error occured."
+            " Please join the discord server https://discord.gg/D3Nfau4ThK and scream at IAmTomahawkx#1000" 
+            " about why the RTFS endpoint doesn't work.")
             data = await resp.json()
         return RTFS(data['nodes'], data['query_time'])
 
