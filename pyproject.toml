@@ -1,10 +1,13 @@
 [tool.poetry]
 name = "aiodevision"
-version = "0.2.2"
+version = "0.2.3"
 description = "A simple asynchronous wrapper for the Idevision API."
 authors = ["MrKomodoDragon <svrchn921@outlook.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/MrKomodoDragon/aiodevision"
+repository = "https://github.com/MrKomodoDragon/aiodevision"
+
 
 [tool.poetry.dependencies]
 python = ">=3.5"
