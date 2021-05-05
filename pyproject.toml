@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A simple asynchronous wrapper for the Idevision API."
 authors = ["MrKomodoDragon <svrchn921@outlook.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.5"
