@@ -5,9 +5,11 @@ import datetime
 class RTFS:
     __slots__ = ('nodes', 'query_time')
 
-    def __init__(self, nodes: str, query_time: float) -> None:
-        self.nodes = nodes
-        self.query_time = query_time
+    def __init__(self, data: typing.Dict[str, str]) -> None:
+        self.nodes = data['nodes']
+        self.query_time = data['query_time']
+        self.cache_indexed = datetime.datetime.fromisoformat(data['_cache_indexed'])
+        self.cache_expires = datetime.datetime.fromisoformat(data['_cache_expires'])
 
 
 class RTFM:

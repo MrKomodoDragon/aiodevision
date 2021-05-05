@@ -54,7 +54,7 @@ class Client:
             " Please join the discord server https://discord.gg/D3Nfau4ThK and scream at IAmTomahawkx#1000" 
             " about why the RTFS endpoint doesn't work.")
             data = await resp.json()
-        return RTFS(data['nodes'], data['query_time'])
+        return RTFS(data['nodes'])
 
     async def rtfm(
         self,
