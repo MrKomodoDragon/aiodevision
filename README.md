@@ -13,7 +13,9 @@ pip install aiodevision
 
 If you wanna install the dev version, do
 ```py
-pip install git+
+pip install git+https://github.com/MrKomodoDragon/aiodevision
+```
+
 
 todo:
 - Add Better Exception Haandling
