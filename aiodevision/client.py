@@ -19,7 +19,7 @@ class InvalidImage(Exception):
 
 
 class Client:
-    def __init__(self, token: typing.Optional[str]):
+    def __init__(self, token: typing.Optional[str] = None):
         self.loop = asyncio.get_event_loop()
         headers = {'Authorization': token.strip()} if token else None
         self.session = aiohttp.ClientSession(headers=headers, loop=self.loop)
