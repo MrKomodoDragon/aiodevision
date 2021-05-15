@@ -36,9 +36,9 @@ class Client:
             'wavelink',
             'aiohttp',
             'discord.py',
-            'discord.py-2'
-            'dpy'
-            'dpy2'
+            'discord.py-2',
+            'dpy',
+            'dpy2',
         ]:
             raise UndefinedLibraryError(
                 'The Library specficied cannot by queried. Please provide a library from the following list: twitchio, wavelink, discord.py, or aiohttp.'
