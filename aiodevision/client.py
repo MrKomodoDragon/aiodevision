@@ -25,7 +25,7 @@ class Client:
     def __init__(self, token: typing.Optional[str] = None):
         self.loop = asyncio.get_event_loop()
         headers = {'Authorization': token.strip()} if token else None
-        self.session = aiohttp.ClientSession(headers=headers, loop=self.loop)
+        self.session = aiohttp.ClientSession(headers=headers, raise_for_status = True)
         self.token = token.strip() if token else None
 
     async def rtfs(
