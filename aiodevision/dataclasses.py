@@ -3,13 +3,17 @@ import datetime
 
 
 class RTFS:
-    __slots__ = ('nodes', 'query_time')
+    __slots__ = ('nodes', 'query_time', 'cache_indexed', 'cache_expires')
 
     def __init__(self, data: typing.Dict[str, str]) -> None:
         self.nodes = data['nodes']
         self.query_time = data['query_time']
-        self.cache_indexed = datetime.datetime.fromisoformat(data['_cache_indexed'])
-        self.cache_expires = datetime.datetime.fromisoformat(data['_cache_expires'])
+        self.cache_indexed = datetime.datetime.fromisoformat(
+            data['_cache_indexed']
+        )
+        self.cache_expires = datetime.datetime.fromisoformat(
+            data['_cache_expires']
+        )
 
 
 class RTFM:
@@ -67,7 +71,7 @@ class CDNStats:
 
 
 class UploadStats:
-    def __init__(self, data: typing.Dict[str, typing.Union[str, float]]):
+    def __init__(self, data: typing.Dict[str, typing.Any]):
         self.url = data['url']
         self.timestamp = datetime.datetime.fromtimestamp(data['timestamp'])
         self.author = data['author']
