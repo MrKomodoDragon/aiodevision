@@ -18,7 +18,7 @@ pip install git+https://github.com/MrKomodoDragon/aiodevision
 
 
 todo:
-- Add Better Exception Haandling
+- Add Better Exception Handling
 - Handle Ratelimits 
 
 
