@@ -65,7 +65,7 @@ class CDN:
 class CDNStats:
     __slots__ = ('upload_count', 'uploaded_today', 'last_uploaded')
 
-    def __init__(self, data: typing.Dict[str, typing.Union[str, float]]):
+    def __init__(self, data: typing.Dict[str, typing.Any]):
         self.upload_count = data['upload_count']
         self.uploaded_today = data['uploaded_today']
         self.last_uploaded = data['last_uploaded']
