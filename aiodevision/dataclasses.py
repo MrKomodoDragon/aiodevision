@@ -3,26 +3,27 @@ import datetime
 
 
 class RTFS:
-    __slots__ = ('nodes', 'query_time', 'cache_indexed', 'cache_expires')
+    __slots__ = ('nodes', 'query_time',)
 
     def __init__(self, data: typing.Dict[str, str]) -> None:
         self.nodes = data['nodes']
-        self.query_time = data['query_time']
-        self.cache_indexed = datetime.datetime.fromisoformat(
-            data['_cache_indexed']
-        )
-        self.cache_expires = datetime.datetime.fromisoformat(
-            data['_cache_expires']
-        )
+        self.query_time: float = float(data['query_time'])
+        
 
 
 class RTFM:
-    __slots__ = ('nodes', 'query_time')
+    __slots__ = ('nodes', 'query_time', 'cache_indexed', 'cache_expires')
 
-    def __init__(self, nodes: str, query_time: float) -> None:
+    def __init__(self, data: typing.Dict[str, str]) -> None:
         """Base class used for the rtfm function"""
-        self.nodes = nodes
-        self.query_time = query_time
+        self.nodes = data['nodes']
+        self.query_time = float(data['query_time'])
+        self.cache_indexed: datetime.datetime = datetime.datetime.fromisoformat(
+            data['_cache_indexed']
+        )
+        self.cache_expires: datetime.datetime = datetime.datetime.fromisoformat(
+            data['_cache_expires']
+        )
 
 
 class XKCD:
