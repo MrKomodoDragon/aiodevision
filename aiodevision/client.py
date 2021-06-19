@@ -1,4 +1,3 @@
-import asyncio
 import aiohttp
 from io import BytesIO
 import imghdr
@@ -28,10 +27,9 @@ class InvalidDocumentation(Exception):
 
 class Client:
     def __init__(self, token: typing.Optional[str] = None) -> None:
-        self.loop = asyncio.get_event_loop()
         headers = {'Authorization': token.strip()} if token else None
-        self.session = aiohttp.ClientSession(headers=headers, raise_for_status = True)
-        self.token = token.strip() if token else None
+        self.session: aiohttp.ClientSession = aiohttp.ClientSession(headers=headers, raise_for_status = True)
+        self.token: typing.Optional[str] = token.strip() if token else None
 
     async def rtfs(
         self,
@@ -106,7 +104,7 @@ class Client:
             'https://idevision.net/api/public/rtfm', params=params
         ) as resp:
             data = await resp.json()
-        return RTFM(data['nodes'], float(data['query_time']))
+        return RTFM(data)
 
     async def ocr(self, image: BytesIO) -> str:
         if not self.token:
@@ -146,7 +144,7 @@ class Client:
         ):
             return 'Succesfully added tags to xkcd comic'
 
-    async def hompage(self, payload: typing.Dict[str, str]):
+    async def hompage(self, payload: typing.Dict[str, str]) -> str:
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint.')
         async with self.session.post(
@@ -176,7 +174,7 @@ class Client:
             data = await resp.json()
         return CDNStats(data)
 
-    async def get_upload_stats(self, node: str, slug: str):
+    async def get_upload_stats(self, node: str, slug: str) -> UploadStats:
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint')
         async with self.session.get(
