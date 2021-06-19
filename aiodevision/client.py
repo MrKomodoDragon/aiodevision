@@ -26,10 +26,12 @@ class InvalidDocumentation(Exception):
 
 
 class Client:
-    def __init__(self, token: typing.Optional[str] = None) -> None:
+    def __init__(self, token: typing.Optional[str] = None, beta: bool=False) -> None:
         headers = {'Authorization': token.strip()} if token else None
         self.session: aiohttp.ClientSession = aiohttp.ClientSession(headers=headers, raise_for_status = True)
         self.token: typing.Optional[str] = token.strip() if token else None
+        self.base_url = 'https://beta.idevision.net/' if beta else 'https://idevision.net/'
+        
 
     async def rtfs(
         self,
@@ -67,7 +69,7 @@ class Client:
         if query:
             params['query'] = query
         async with self.session.get(
-            'https://idevision.net/api/public/rtfs', params=params
+            self.base_url + 'api/public/rtfs', params=params
         ) as resp:
             if resp.status == 500:
                 raise InternalServerError(
@@ -101,7 +103,7 @@ class Client:
                 )
         params = {'query': query, 'location': doc_url}
         async with self.session.get(
-            'https://idevision.net/api/public/rtfm', params=params
+            self.base_url + '/api/public/rtfm', params=params
         ) as resp:
             data = await resp.json()
         return RTFM(data)
@@ -116,7 +118,7 @@ class Client:
             )
         params: typing.Dict[str, typing.Union[str]] = {'filetype': filetype}
         async with self.session.get(
-            'https://idevision.net/api/public/ocr',
+            self.base_url + '/api/public/ocr',
             params=params,
             data=image,
         ) as resp:
@@ -132,7 +134,7 @@ class Client:
     async def xkcd(self, query: str) -> XKCD:
         params = {'query': query}
         async with self.session.get(
-            'https://idevision.net/api/public/xkcd', params=params
+            self.base_url + '/api/public/xkcd', params=params
         ) as resp:
             data = await resp.json()
         return XKCD(data['nodes'], float(data['query_time']))
@@ -140,7 +142,7 @@ class Client:
     async def xkcd_tags(self, word: str, num: int) -> str:
         payload = {'tag': word, 'num': num}
         async with self.session.put(
-            'https://idevision.net/api/public/xkcd/tags', data=payload
+            self.base_url + '/api/public/xkcd/tags', data=payload
         ):
             return 'Succesfully added tags to xkcd comic'
 
@@ -148,7 +150,7 @@ class Client:
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint.')
         async with self.session.post(
-            'https://idevision.net/api/homepage', data=payload
+            self.base_url + '/api/homepage', data=payload
         ):
             return 'Successfully set up homepage'
 
@@ -164,13 +166,13 @@ class Client:
             'File-Name': 'aiodevision.{0}'.format(ext)
         }
         async with self.session.post(
-            'https://idevision.net/', data=image, headers=headers
+            self.base_url + '/api/cdn', data=image, headers=headers
         ) as resp:
             data: typing.Dict[str, str] = await resp.json()
         return CDN(data)
 
     async def cdn_stats(self) -> CDNStats:
-        async with self.session.get('https://idevision.net/api/cdn') as resp:
+        async with self.session.get(self.base_url + '/api/cdn') as resp:
             data = await resp.json()
         return CDNStats(data)
 
@@ -178,7 +180,7 @@ class Client:
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint')
         async with self.session.get(
-            'https://idevision.net/api{0}/{1}'.format(node, slug)
+            self.base_url + '/api{0}/{1}'.format(node, slug)
         ) as resp:
             data = await resp.json()
             return UploadStats(data)
@@ -186,6 +188,6 @@ class Client:
     async def delete_cdn(self, node: str, slug: str) -> str:
         if not self.token:
             raise TokenRequired('A Token is required to access this endpoint')
-        url = 'https://idevision.net/api/{0}/{1}'.format(node, slug)
+        url = self.base_url + '/api/{0}/{1}'.format(node, slug)
         async with self.session.delete(url):
             return 'Succesfully deleted upload'
