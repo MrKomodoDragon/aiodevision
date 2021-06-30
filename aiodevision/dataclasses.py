@@ -6,6 +6,7 @@ class RTFS:
     __slots__ = ('nodes', 'query_time',)
 
     def __init__(self, data: typing.Dict[str, typing.Any]) -> None:
+        print(data)
         self.nodes: typing.Dict[str, typing.Any] = data['nodes']
         self.query_time: float = float(data['query_time'])
         

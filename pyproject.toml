@@ -12,6 +12,7 @@ repository = "https://github.com/MrKomodoDragon/aiodevision"
 [tool.poetry.dependencies]
 python = ">=3.5"
 aiohttp = "^3.7.4"
+typing-extensions = "^3.10.0.0"
 
 [tool.poetry.dev-dependencies]
 

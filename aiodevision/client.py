@@ -4,7 +4,6 @@ import imghdr
 from .dataclasses import CDN, CDNStats, RTFS, RTFM, UploadStats, XKCD
 import typing
 
-
 class UndefinedLibraryError(Exception):
     pass
 
@@ -25,6 +24,7 @@ class InvalidDocumentation(Exception):
     pass
 
 
+
 class Client:
     def __init__(self, token: typing.Optional[str] = None, beta: bool=False) -> None:
         headers = {'Authorization': token.strip()} if token else None
@@ -32,7 +32,7 @@ class Client:
         self.token: typing.Optional[str] = token.strip() if token else None
         self.base_url = 'https://beta.idevision.net/' if beta else 'https://idevision.net/'
         
-
+    
     async def rtfs(
         self,
         *,
@@ -146,13 +146,13 @@ class Client:
         ):
             return 'Succesfully added tags to xkcd comic'
 
+
     async def hompage(self, payload: typing.Dict[str, str]) -> str:
-        if not self.token:
-            raise TokenRequired('A Token is required to access this endpoint.')
         async with self.session.post(
             self.base_url + '/api/homepage', data=payload
         ):
             return 'Successfully set up homepage'
+
 
     async def cdn_upload(self, image: BytesIO) -> CDN:
         if not self.token:
@@ -191,3 +191,4 @@ class Client:
         url = self.base_url + '/api/{0}/{1}'.format(node, slug)
         async with self.session.delete(url):
             return 'Succesfully deleted upload'
+
