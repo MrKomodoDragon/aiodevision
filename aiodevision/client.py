@@ -79,6 +79,7 @@ class Client:
                 )
 
             data = await resp.json()
+            print(data)
         return RTFS(data)
 
     async def rtfm(
